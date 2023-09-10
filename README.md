@@ -1,12 +1,12 @@
 # feedback_app
 
-##Description :
+#Description :
 Flutter firebase application for both Android and iOS platform.
 
-## APK Link (Android):
+# APK Link (Android):
 https://i.diawi.com/AhzXUu
 
-##TechStack Used:
+#TechStack Used:
 
 - architecture: TDD style clean architecture
 - state management: Cubit from flutter_bloc library
@@ -19,7 +19,7 @@ https://i.diawi.com/AhzXUu
 
 
 
-##Feature:
+#Feature:
 
 - Login or Register using Email & Password
 - User can post feedback with category, user can also post anonymous feedback without mentioning
@@ -29,29 +29,29 @@ https://i.diawi.com/AhzXUu
 
 
 
-##Extra features that can be added later on:
+#Extra features that can be added later on:
 
 - Pagination of feedbacks
 - Local search of feedback by feedback title
 - Display image of the feedback sender in feedback
 - If user is owner of selected feedback he can edit/delete feedback
 - Email verification using link and forgot password
-- Localization
+- Localization and dark mode support
 
 
-##Recommended flutter version
+#Recommended flutter version
 Flutter 3.13.2 • channel stable • https://github.com/flutter/flutter.git
 Framework • revision ff5b5b5fa6 (2 weeks ago) • 2023-08-24 08:12:28 -0500
 Engine • revision b20183e040
 Tools • Dart 3.1.0 • DevTools 2.25.0
 
-##How to run project?
+#How to run project?
 
 - flutter pub get
 - dart run build_runner build --delete-conflicting-outputs
 - flutter run
 
-##How to build release apk for internal release?
+#How to build release apk for internal release?
 
 - flutter clean
 - flutter pub get
