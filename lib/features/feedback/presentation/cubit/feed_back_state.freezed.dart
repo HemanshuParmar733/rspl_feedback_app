@@ -27,10 +27,12 @@ mixin _$FeedbackState {
             bool? isUpdatingFeedback,
             String? username,
             String? selectedCategory,
-            List<String>? feedbackCategories)
+            List<String>? feedbackCategories,
+            List<FeedbackModel>? feedbackModelList)
         success,
   }) =>
       throw _privateConstructorUsedError;
+
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
@@ -42,7 +44,8 @@ mixin _$FeedbackState {
             bool? isUpdatingFeedback,
             String? username,
             String? selectedCategory,
-            List<String>? feedbackCategories)?
+            List<String>? feedbackCategories,
+            List<FeedbackModel>? feedbackModelList)?
         success,
   }) =>
       throw _privateConstructorUsedError;
@@ -57,11 +60,13 @@ mixin _$FeedbackState {
             bool? isUpdatingFeedback,
             String? username,
             String? selectedCategory,
-            List<String>? feedbackCategories)?
+            List<String>? feedbackCategories,
+            List<FeedbackModel>? feedbackModelList)?
         success,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
+
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(FeedbackInitial value) initial,
@@ -69,6 +74,7 @@ mixin _$FeedbackState {
     required TResult Function(FeedbackSuccess value) success,
   }) =>
       throw _privateConstructorUsedError;
+
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(FeedbackInitial value)? initial,
@@ -98,9 +104,9 @@ class _$FeedbackStateCopyWithImpl<$Res, $Val extends FeedbackState>
     implements $FeedbackStateCopyWith<$Res> {
   _$FeedbackStateCopyWithImpl(this._value, this._then);
 
-  // ignore: unused_field
+// ignore: unused_field
   final $Val _value;
-  // ignore: unused_field
+// ignore: unused_field
   final $Res Function($Val) _then;
 }
 
@@ -151,7 +157,8 @@ class _$FeedbackInitial implements FeedbackInitial {
             bool? isUpdatingFeedback,
             String? username,
             String? selectedCategory,
-            List<String>? feedbackCategories)
+            List<String>? feedbackCategories,
+            List<FeedbackModel>? feedbackModelList)
         success,
   }) {
     return initial();
@@ -169,7 +176,8 @@ class _$FeedbackInitial implements FeedbackInitial {
             bool? isUpdatingFeedback,
             String? username,
             String? selectedCategory,
-            List<String>? feedbackCategories)?
+            List<String>? feedbackCategories,
+            List<FeedbackModel>? feedbackModelList)?
         success,
   }) {
     return initial?.call();
@@ -187,7 +195,8 @@ class _$FeedbackInitial implements FeedbackInitial {
             bool? isUpdatingFeedback,
             String? username,
             String? selectedCategory,
-            List<String>? feedbackCategories)?
+            List<String>? feedbackCategories,
+            List<FeedbackModel>? feedbackModelList)?
         success,
     required TResult orElse(),
   }) {
@@ -310,7 +319,8 @@ class _$FeedbackFailure implements FeedbackFailure {
             bool? isUpdatingFeedback,
             String? username,
             String? selectedCategory,
-            List<String>? feedbackCategories)
+            List<String>? feedbackCategories,
+            List<FeedbackModel>? feedbackModelList)
         success,
   }) {
     return failure(errorMsg);
@@ -328,7 +338,8 @@ class _$FeedbackFailure implements FeedbackFailure {
             bool? isUpdatingFeedback,
             String? username,
             String? selectedCategory,
-            List<String>? feedbackCategories)?
+            List<String>? feedbackCategories,
+            List<FeedbackModel>? feedbackModelList)?
         success,
   }) {
     return failure?.call(errorMsg);
@@ -346,7 +357,8 @@ class _$FeedbackFailure implements FeedbackFailure {
             bool? isUpdatingFeedback,
             String? username,
             String? selectedCategory,
-            List<String>? feedbackCategories)?
+            List<String>? feedbackCategories,
+            List<FeedbackModel>? feedbackModelList)?
         success,
     required TResult orElse(),
   }) {
@@ -413,7 +425,8 @@ abstract class _$$FeedbackSuccessCopyWith<$Res> {
       bool? isUpdatingFeedback,
       String? username,
       String? selectedCategory,
-      List<String>? feedbackCategories});
+      List<String>? feedbackCategories,
+      List<FeedbackModel>? feedbackModelList});
 }
 
 /// @nodoc
@@ -434,6 +447,7 @@ class __$$FeedbackSuccessCopyWithImpl<$Res>
     Object? username = freezed,
     Object? selectedCategory = freezed,
     Object? feedbackCategories = freezed,
+    Object? feedbackModelList = freezed,
   }) {
     return _then(_$FeedbackSuccess(
       isAnonymous: freezed == isAnonymous
@@ -464,6 +478,10 @@ class __$$FeedbackSuccessCopyWithImpl<$Res>
           ? _value._feedbackCategories
           : feedbackCategories // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      feedbackModelList: freezed == feedbackModelList
+          ? _value._feedbackModelList
+          : feedbackModelList // ignore: cast_nullable_to_non_nullable
+              as List<FeedbackModel>?,
     ));
   }
 }
@@ -478,8 +496,10 @@ class _$FeedbackSuccess implements FeedbackSuccess {
       this.isUpdatingFeedback,
       this.username,
       this.selectedCategory,
-      final List<String>? feedbackCategories})
-      : _feedbackCategories = feedbackCategories;
+      final List<String>? feedbackCategories,
+      final List<FeedbackModel>? feedbackModelList})
+      : _feedbackCategories = feedbackCategories,
+        _feedbackModelList = feedbackModelList;
 
   @override
   final bool? isAnonymous;
@@ -500,13 +520,24 @@ class _$FeedbackSuccess implements FeedbackSuccess {
     if (value == null) return null;
     if (_feedbackCategories is EqualUnmodifiableListView)
       return _feedbackCategories;
-    // ignore: implicit_dynamic_type
+// ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<FeedbackModel>? _feedbackModelList;
+  @override
+  List<FeedbackModel>? get feedbackModelList {
+    final value = _feedbackModelList;
+    if (value == null) return null;
+    if (_feedbackModelList is EqualUnmodifiableListView)
+      return _feedbackModelList;
+// ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(value);
   }
 
   @override
   String toString() {
-    return 'FeedbackState.success(isAnonymous: $isAnonymous, isFeedbackCreate: $isFeedbackCreate, isLoading: $isLoading, isUpdatingFeedback: $isUpdatingFeedback, username: $username, selectedCategory: $selectedCategory, feedbackCategories: $feedbackCategories)';
+    return 'FeedbackState.success(isAnonymous: $isAnonymous, isFeedbackCreate: $isFeedbackCreate, isLoading: $isLoading, isUpdatingFeedback: $isUpdatingFeedback, username: $username, selectedCategory: $selectedCategory, feedbackCategories: $feedbackCategories, feedbackModelList: $feedbackModelList)';
   }
 
   @override
@@ -527,7 +558,9 @@ class _$FeedbackSuccess implements FeedbackSuccess {
             (identical(other.selectedCategory, selectedCategory) ||
                 other.selectedCategory == selectedCategory) &&
             const DeepCollectionEquality()
-                .equals(other._feedbackCategories, _feedbackCategories));
+                .equals(other._feedbackCategories, _feedbackCategories) &&
+            const DeepCollectionEquality()
+                .equals(other._feedbackModelList, _feedbackModelList));
   }
 
   @override
@@ -539,7 +572,8 @@ class _$FeedbackSuccess implements FeedbackSuccess {
       isUpdatingFeedback,
       username,
       selectedCategory,
-      const DeepCollectionEquality().hash(_feedbackCategories));
+      const DeepCollectionEquality().hash(_feedbackCategories),
+      const DeepCollectionEquality().hash(_feedbackModelList));
 
   @JsonKey(ignore: true)
   @override
@@ -559,11 +593,12 @@ class _$FeedbackSuccess implements FeedbackSuccess {
             bool? isUpdatingFeedback,
             String? username,
             String? selectedCategory,
-            List<String>? feedbackCategories)
+            List<String>? feedbackCategories,
+            List<FeedbackModel>? feedbackModelList)
         success,
   }) {
     return success(isAnonymous, isFeedbackCreate, isLoading, isUpdatingFeedback,
-        username, selectedCategory, feedbackCategories);
+        username, selectedCategory, feedbackCategories, feedbackModelList);
   }
 
   @override
@@ -578,11 +613,19 @@ class _$FeedbackSuccess implements FeedbackSuccess {
             bool? isUpdatingFeedback,
             String? username,
             String? selectedCategory,
-            List<String>? feedbackCategories)?
+            List<String>? feedbackCategories,
+            List<FeedbackModel>? feedbackModelList)?
         success,
   }) {
-    return success?.call(isAnonymous, isFeedbackCreate, isLoading,
-        isUpdatingFeedback, username, selectedCategory, feedbackCategories);
+    return success?.call(
+        isAnonymous,
+        isFeedbackCreate,
+        isLoading,
+        isUpdatingFeedback,
+        username,
+        selectedCategory,
+        feedbackCategories,
+        feedbackModelList);
   }
 
   @override
@@ -597,13 +640,21 @@ class _$FeedbackSuccess implements FeedbackSuccess {
             bool? isUpdatingFeedback,
             String? username,
             String? selectedCategory,
-            List<String>? feedbackCategories)?
+            List<String>? feedbackCategories,
+            List<FeedbackModel>? feedbackModelList)?
         success,
     required TResult orElse(),
   }) {
     if (success != null) {
-      return success(isAnonymous, isFeedbackCreate, isLoading,
-          isUpdatingFeedback, username, selectedCategory, feedbackCategories);
+      return success(
+          isAnonymous,
+          isFeedbackCreate,
+          isLoading,
+          isUpdatingFeedback,
+          username,
+          selectedCategory,
+          feedbackCategories,
+          feedbackModelList);
     }
     return orElse();
   }
@@ -651,7 +702,8 @@ abstract class FeedbackSuccess implements FeedbackState {
       final bool? isUpdatingFeedback,
       final String? username,
       final String? selectedCategory,
-      final List<String>? feedbackCategories}) = _$FeedbackSuccess;
+      final List<String>? feedbackCategories,
+      final List<FeedbackModel>? feedbackModelList}) = _$FeedbackSuccess;
 
   bool? get isAnonymous;
   bool? get isFeedbackCreate;
@@ -660,6 +712,7 @@ abstract class FeedbackSuccess implements FeedbackState {
   String? get username;
   String? get selectedCategory;
   List<String>? get feedbackCategories;
+  List<FeedbackModel>? get feedbackModelList;
   @JsonKey(ignore: true)
   _$$FeedbackSuccessCopyWith<_$FeedbackSuccess> get copyWith =>
       throw _privateConstructorUsedError;

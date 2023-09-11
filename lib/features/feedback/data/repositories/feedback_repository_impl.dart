@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:feedback_app/core/enums/user_action_enum.dart';
 import 'package:feedback_app/core/failure/failures.dart';
@@ -24,8 +23,9 @@ class FeedbackRepositoryImpl implements FeedbackRepository {
   }
 
   @override
-  Stream<QuerySnapshot<Map<String, dynamic>>> getAllFeedbacksStream() {
-    return _feedbackDataSource.getAllFeedbacksStream();
+  Future<List<FeedbackModel>> getPaginatedFeedbacks(
+      FeedbackModel? feedbackModel) {
+    return _feedbackDataSource.getPaginatedFeedbacks(feedbackModel);
   }
 
   @override

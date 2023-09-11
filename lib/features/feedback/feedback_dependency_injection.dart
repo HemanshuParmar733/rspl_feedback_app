@@ -3,7 +3,7 @@ import 'package:feedback_app/features/feedback/data/data_source/remote/feedback_
 import 'package:feedback_app/features/feedback/data/repositories/feedback_repository_impl.dart';
 import 'package:feedback_app/features/feedback/domain/repositories/feedback_repository.dart';
 import 'package:feedback_app/features/feedback/domain/usecases/create_new_feedback_usecase.dart';
-import 'package:feedback_app/features/feedback/domain/usecases/get_all_feedbacks_usecase.dart';
+import 'package:feedback_app/features/feedback/domain/usecases/get_paginated_feedbacks_usecase.dart';
 import 'package:feedback_app/features/feedback/domain/usecases/get_userdata_usecase.dart';
 import 'package:feedback_app/features/feedback/domain/usecases/update_feedback_usecase.dart';
 import 'package:feedback_app/features/feedback/presentation/cubit/feed_back_cubit.dart';
@@ -23,8 +23,8 @@ Future<void> initFeedbackDependencies() async {
       () => FeedbackRepositoryImpl(slFeedback.call()));
 
   // usecases
-  slFeedback.registerLazySingleton<GetAllFeedbacksUseCase>(
-      () => GetAllFeedbacksUseCase(slFeedback.call()));
+  slFeedback.registerLazySingleton<GetPaginatedFeedbacksUseCase>(
+      () => GetPaginatedFeedbacksUseCase(slFeedback.call()));
   slFeedback.registerLazySingleton<CreateNewFeedbackUseCase>(
       () => CreateNewFeedbackUseCase(slFeedback.call()));
   slFeedback.registerLazySingleton<GetAllFeedbackCategoriesUseCase>(

@@ -1,10 +1,9 @@
 import 'package:bloc/bloc.dart' show Cubit;
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feedback_app/core/enums/user_action_enum.dart';
 import 'package:feedback_app/features/feedback/data/models/feedback_model.dart';
 import 'package:feedback_app/features/feedback/domain/usecases/create_new_feedback_usecase.dart';
 import 'package:feedback_app/features/feedback/domain/usecases/get_all_feedback_categories.dart';
-import 'package:feedback_app/features/feedback/domain/usecases/get_all_feedbacks_usecase.dart';
+import 'package:feedback_app/features/feedback/domain/usecases/get_paginated_feedbacks_usecase.dart';
 import 'package:feedback_app/features/feedback/domain/usecases/get_userdata_usecase.dart';
 import 'package:feedback_app/features/feedback/domain/usecases/update_feedback_usecase.dart';
 import 'package:feedback_app/features/feedback/feedback_dependency_injection.dart';
@@ -15,8 +14,8 @@ class FeedBackCubit extends Cubit<FeedbackState> {
   FeedBackCubit() : super(const FeedbackInitial());
   final CreateNewFeedbackUseCase _createNewFeedbackUseCase =
       slFeedback<CreateNewFeedbackUseCase>();
-  final GetAllFeedbacksUseCase _getAllFeedbacksUseCase =
-      slFeedback<GetAllFeedbacksUseCase>();
+  final GetPaginatedFeedbacksUseCase _getAllFeedbacksUseCase =
+      slFeedback<GetPaginatedFeedbacksUseCase>();
   final GetAllFeedbackCategoriesUseCase _getAllFeedbackCategoriesUseCase =
       slFeedback<GetAllFeedbackCategoriesUseCase>();
   final UpdateFeedbackUseCase _updateFeedbackUseCase =
@@ -74,8 +73,16 @@ class FeedBackCubit extends Cubit<FeedbackState> {
     }
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getAllFeedbackStream() =>
-      _getAllFeedbacksUseCase.call();
+  Future<List<FeedbackModel>> getPaginatedFeedback(
+      FeedbackModel? feedbackModel) async {
+    return await _getAllFeedbacksUseCase.call(feedbackModel);
+  }
+
+  Future<void> getInitialFeedbacks({FeedbackModel? feedbackModel}) async {
+    final List<FeedbackModel> feedbacks =
+        await _getAllFeedbacksUseCase.call(feedbackModel);
+    changeSuccessState(feedbacks: feedbacks);
+  }
 
   void changeCategory(String? value) {
     changeSuccessState(selectedCategory: value);
@@ -83,18 +90,6 @@ class FeedBackCubit extends Cubit<FeedbackState> {
 
   void changeReporterVisibility(bool? value) {
     changeSuccessState(isAnonymous: value);
-  }
-
-  List<FeedbackModel> getFeedbackModelList(
-      List<QueryDocumentSnapshot<Object?>>? docs) {
-    List<FeedbackModel> feedbacks = [];
-    docs?.forEach((element) {
-      if (element.data() != null) {
-        feedbacks.add(
-            FeedbackModel.fromJson(element.data() as Map<String, dynamic>));
-      }
-    });
-    return feedbacks;
   }
 
   void updateFeedback(
@@ -132,7 +127,8 @@ class FeedBackCubit extends Cubit<FeedbackState> {
       bool? isUpdatingFeedback,
       String? selectedCategory,
       String? username,
-      List<String>? categories}) {
+      List<String>? categories,
+      List<FeedbackModel>? feedbacks}) {
     if (state is FeedbackSuccess) {
       final currentState = state as FeedbackSuccess;
       emit(currentState.copyWith(
@@ -143,17 +139,34 @@ class FeedBackCubit extends Cubit<FeedbackState> {
               isUpdatingFeedback ?? currentState.isUpdatingFeedback,
           selectedCategory: selectedCategory ?? currentState.selectedCategory,
           feedbackCategories: categories ?? currentState.feedbackCategories,
+          feedbackModelList: feedbacks ?? currentState.feedbackModelList,
           isLoading: isLoading ?? currentState.isLoading));
     } else {
       emit(FeedbackSuccess(
-        isFeedbackCreate: isFeedbackCreate ?? false,
-        isAnonymous: isAnonymous ?? false,
-        isLoading: isLoading ?? false,
-        username: username ?? "",
-        isUpdatingFeedback: isUpdatingFeedback ?? false,
-        selectedCategory: selectedCategory ?? "Other",
-        feedbackCategories: categories ?? [],
-      ));
+          isFeedbackCreate: isFeedbackCreate ?? false,
+          isAnonymous: isAnonymous ?? false,
+          isLoading: isLoading ?? false,
+          username: username ?? "",
+          isUpdatingFeedback: isUpdatingFeedback ?? false,
+          selectedCategory: selectedCategory ?? "Other",
+          feedbackCategories: categories ?? [],
+          feedbackModelList: feedbacks ?? []));
+    }
+  }
+
+  Future<void> fetchNextPage() async {
+    if (state is FeedbackSuccess) {
+      final currentState = state as FeedbackSuccess;
+      changeSuccessState(isLoading: true);
+      final List<FeedbackModel> feedbacks =
+          await getPaginatedFeedback(currentState.feedbackModelList?.last);
+
+      // append upcoming lis data into existing list
+      final List<FeedbackModel> list =
+          List.from(currentState.feedbackModelList!);
+      list.addAll(feedbacks);
+
+      changeSuccessState(feedbacks: list, isLoading: false);
     }
   }
 }

@@ -81,7 +81,7 @@ class CreateFeedBackPage extends StatelessWidget {
                           return const CustomErrorWidget(
                               errorMsg: "Failed to fetch categories");
                         }, success: (_, __, ___, ____, _____, selectedCategory,
-                            categories) {
+                            categories, ______) {
                           return DropdownButton<String>(
                             underline: const SizedBox.shrink(),
                             value: selectedCategory,
@@ -114,7 +114,7 @@ class CreateFeedBackPage extends StatelessWidget {
                           }, failure: (failureMsg) {
                             return _buildAnonymousCheckBox(isSelected: true);
                           }, success: (isAnonymous, _, __, ____, _____, ______,
-                              _______) {
+                              _______, ________) {
                             return _buildAnonymousCheckBox(
                                 isSelected: isAnonymous ?? true);
                           });
