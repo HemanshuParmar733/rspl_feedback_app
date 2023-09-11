@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../data/models/feedback_model.dart';
+
 part 'feed_back_state.freezed.dart';
 
 @freezed
@@ -15,5 +17,6 @@ abstract class FeedbackState with _$FeedbackState {
       bool? isUpdatingFeedback,
       String? username,
       String? selectedCategory,
-      List<String>? feedbackCategories}) = FeedbackSuccess;
+      List<String>? feedbackCategories,
+      List<FeedbackModel>? feedbackModelList}) = FeedbackSuccess;
 }

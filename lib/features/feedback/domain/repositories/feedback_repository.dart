@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/enums/user_action_enum.dart';
@@ -12,7 +11,8 @@ abstract class FeedbackRepository {
 
   Future<Either<Failure, bool>> createNewFeedback(FeedbackModel model);
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getAllFeedbacksStream();
+  Future<List<FeedbackModel>> getPaginatedFeedbacks(
+      FeedbackModel? feedbackModel);
 
   Future<Either<Failure, bool>> updateFeedback(
       FeedbackModel model, UserAction userAction);

@@ -6,6 +6,7 @@ import 'package:feedback_app/features/feedback/data/data_source/remote/feedback_
 import 'package:feedback_app/features/feedback/data/models/category_model.dart';
 import 'package:feedback_app/features/feedback/data/models/feedback_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../../../../../core/failure/failures.dart';
 
@@ -61,11 +62,11 @@ class FeedbackDataSourceImpl implements FeedbackDataSource {
   }
 
   @override
-  Future<Either<Failure, bool>> updateFeedback(
-      FeedbackModel model, UserAction userAction) async {
+  Future<Either<Failure, bool>> updateFeedback(FeedbackModel model,
+      UserAction userAction) async {
     try {
       final result =
-          await _firestore.collection("feedbacks").doc(model.id).get();
+      await _firestore.collection("feedbacks").doc(model.id).get();
 
       FeedbackModel currentFeedback = FeedbackModel.fromJson(result.data());
       // get current userId
@@ -99,8 +100,54 @@ class FeedbackDataSourceImpl implements FeedbackDataSource {
     }
   }
 
+  Future<int> getPageSize() async {
+    try {
+      final paginationDoc = await _firestore
+          .collection("pagination")
+          .doc("page").get();
+      if (paginationDoc.exists) {
+        return int.parse(paginationDoc.get('page_size'));
+      }
+    } catch (e) {
+      debugPrint('Exception while fetching pageSize : ${e.toString()}');
+    }
+    return 0;
+  }
   @override
-  Stream<QuerySnapshot<Map<String, dynamic>>> getAllFeedbacksStream() {
-    return _firestore.collection("feedbacks").snapshots();
+  Future<List<FeedbackModel>> getPaginatedFeedbacks(
+      FeedbackModel? feedbackModel) async {
+    try {
+      final int pageSize = await getPageSize();
+      if (feedbackModel != null) {
+        // get document from firestore
+        final lastDoc = await _firestore
+            .collection("feedbacks")
+            .doc(feedbackModel.id)
+            .get();
+        if (lastDoc.exists) {
+          // going forward in pagination
+          final query = _firestore
+              .collection("feedbacks")
+              .orderBy("time", descending: true)
+              .startAfterDocument(lastDoc)
+              .limit(pageSize);
+          final snapshots = await query.get();
+          return snapshots.docs.map((e) => FeedbackModel.fromJson(e)).toList();
+        }
+      } else {
+        // initial 5 items sorted list at time of page load
+        final query = _firestore
+            .collection("feedbacks")
+            .orderBy("time", descending: true)
+            .limit(pageSize);
+        final snapshots = await query.get();
+        return snapshots.docs.map((e) => FeedbackModel.fromJson(e)).toList();
+      }
+    } catch (e) {
+      debugPrint('Exception getting paginated feedback : ${e.toString()}');
+    }
+    return [];
   }
 }
+
+
