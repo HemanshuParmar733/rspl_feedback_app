@@ -49,6 +49,7 @@ Tools • Dart 3.1.0 • DevTools 2.25.0
 
 - flutter pub get
 - dart run build_runner build --delete-conflicting-outputs
+- dart run flutter_launcher_icons
 - flutter run
 
 # How to build release apk for internal release?
