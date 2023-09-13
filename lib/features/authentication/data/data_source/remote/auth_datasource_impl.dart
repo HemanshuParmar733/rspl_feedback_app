@@ -14,13 +14,17 @@ class AuthDataSourceImpl implements AuthDataSource {
   AuthDataSourceImpl(this._firebaseAuth, this._fireStore);
 
   @override
-  Future<Either<Failure, bool>> registerNewUser(
-      {required String email,
-      required String password,
-      required UserModel userModel}) async {
+  Future<Either<Failure, bool>> registerNewUser({
+    required String email,
+    required String password,
+    required UserModel userModel,
+  }) async {
     try {
-      final UserCredential loginCredentials = await _firebaseAuth
-          .createUserWithEmailAndPassword(email: email, password: password);
+      final loginCredentials =
+          await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
       if (loginCredentials.user != null) {
         userModel.uid = loginCredentials.user!.uid;

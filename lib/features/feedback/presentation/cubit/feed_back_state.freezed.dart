@@ -32,7 +32,6 @@ mixin _$FeedbackState {
         success,
   }) =>
       throw _privateConstructorUsedError;
-
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
@@ -66,7 +65,6 @@ mixin _$FeedbackState {
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
-
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(FeedbackInitial value) initial,
@@ -74,7 +72,6 @@ mixin _$FeedbackState {
     required TResult Function(FeedbackSuccess value) success,
   }) =>
       throw _privateConstructorUsedError;
-
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(FeedbackInitial value)? initial,
@@ -104,9 +101,9 @@ class _$FeedbackStateCopyWithImpl<$Res, $Val extends FeedbackState>
     implements $FeedbackStateCopyWith<$Res> {
   _$FeedbackStateCopyWithImpl(this._value, this._then);
 
-// ignore: unused_field
+  // ignore: unused_field
   final $Val _value;
-// ignore: unused_field
+  // ignore: unused_field
   final $Res Function($Val) _then;
 }
 
@@ -520,7 +517,7 @@ class _$FeedbackSuccess implements FeedbackSuccess {
     if (value == null) return null;
     if (_feedbackCategories is EqualUnmodifiableListView)
       return _feedbackCategories;
-// ignore: implicit_dynamic_type
+    // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(value);
   }
 
@@ -531,7 +528,7 @@ class _$FeedbackSuccess implements FeedbackSuccess {
     if (value == null) return null;
     if (_feedbackModelList is EqualUnmodifiableListView)
       return _feedbackModelList;
-// ignore: implicit_dynamic_type
+    // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(value);
   }
 
