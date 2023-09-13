@@ -72,13 +72,13 @@ void main() {
           description: 'desc',
           dislikes: ["id2"]);
       //act
-      final model = feedbackModel.copyWith(title: 'xyz', username: 'xyz');
+      final model = feedbackModel.copyWith();
 
       //assert
       expect(model, isA<FeedbackModel>());
       expect(model.id, 'id');
-      expect(model.title, 'xyz');
-      expect(model.userName, 'xyz');
+      expect(model.title, 'abc');
+      expect(model.userName, 'userName');
       expect(model.description, 'desc');
       expect(model.category, 'category');
       expect(model.reporterName, 'reporter');

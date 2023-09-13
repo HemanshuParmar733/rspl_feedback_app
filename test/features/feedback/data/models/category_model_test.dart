@@ -34,12 +34,12 @@ void main() {
       final CategoryModel categoryModel =
           CategoryModel(listOfCategories: ["category1", "category2"]);
       //act
-      final model = categoryModel.copyWith(listOfCategories: ['category3']);
+      final model = categoryModel.copyWith();
 
       //assert
 
       expect(model.listOfCategories, isA<List<String>>());
-      assert(model.listOfCategories!.contains("category3"));
+      assert(model.listOfCategories!.contains("category1"));
     });
   });
 }

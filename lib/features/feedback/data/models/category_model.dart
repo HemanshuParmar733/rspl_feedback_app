@@ -1,14 +1,3 @@
-// To parse this JSON data, do
-//
-//     final categoryModel = categoryModelFromJson(jsonString);
-
-import 'dart:convert';
-
-CategoryModel categoryModelFromJson(String str) =>
-    CategoryModel.fromJson(json.decode(str));
-
-String categoryModelToJson(CategoryModel data) => json.encode(data.toJson());
-
 class CategoryModel {
   List<String>? listOfCategories;
 

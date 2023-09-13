@@ -44,6 +44,13 @@ void main() {
       expect(model.uid, '123');
       expect(model.email, 'a1@gmail.com');
       expect(model.username, 'abc');
+
+      // act
+      final model2 = model.copyWith();
+      expect(model2, isA<UserModel>());
+      expect(model2.uid, '123');
+      expect(model2.email, 'a1@gmail.com');
+      expect(model2.username, 'abc');
     });
   });
 }

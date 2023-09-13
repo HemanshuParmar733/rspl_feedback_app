@@ -1,14 +1,3 @@
-// To parse this JSON data, do
-//
-//     final feedbackModel = feedbackModelFromJson(jsonString);
-
-import 'dart:convert';
-
-FeedbackModel feedbackModelFromJson(String str) =>
-    FeedbackModel.fromJson(json.decode(str));
-
-String feedbackModelToJson(FeedbackModel data) => json.encode(data.toJson());
-
 class FeedbackModel {
   String? category;
   String id;
