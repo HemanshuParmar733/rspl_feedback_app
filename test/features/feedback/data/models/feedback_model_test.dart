@@ -59,5 +59,33 @@ void main() {
       assert(response["likes"].contains("id1"));
       assert(response["dislikes"].contains("id2"));
     });
+    test('FeedbackModel_copyWith_isReturningFeedbackModel', () async {
+      //arrange
+      final FeedbackModel feedbackModel = FeedbackModel(
+          title: 'abc',
+          id: 'id',
+          userName: 'userName',
+          reporterName: 'reporter',
+          likes: ["id1"],
+          time: DateTime.now().toUtc().toString(),
+          category: 'category',
+          description: 'desc',
+          dislikes: ["id2"]);
+      //act
+      final model = feedbackModel.copyWith(title: 'xyz', username: 'xyz');
+
+      //assert
+      expect(model, isA<FeedbackModel>());
+      expect(model.id, 'id');
+      expect(model.title, 'xyz');
+      expect(model.userName, 'xyz');
+      expect(model.description, 'desc');
+      expect(model.category, 'category');
+      expect(model.reporterName, 'reporter');
+      expect(model.likes, isA<List<String>>());
+      expect(model.dislikes, isA<List<String>>());
+      assert(model.likes!.contains("id1"));
+      assert(model.dislikes!.contains("id2"));
+    });
   });
 }

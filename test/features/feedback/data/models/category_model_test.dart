@@ -28,5 +28,18 @@ void main() {
       assert(response["list_of_categories"].contains("category1"));
       assert(response["list_of_categories"].contains("category2"));
     });
+
+    test('CategoryModel_copyWith_isReturningCategoryModel', () async {
+      //arrange
+      final CategoryModel categoryModel =
+          CategoryModel(listOfCategories: ["category1", "category2"]);
+      //act
+      final model = categoryModel.copyWith(listOfCategories: ['category3']);
+
+      //assert
+
+      expect(model.listOfCategories, isA<List<String>>());
+      assert(model.listOfCategories!.contains("category3"));
+    });
   });
 }

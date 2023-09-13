@@ -2,4 +2,5 @@ import 'package:feedback_app/features/authentication/domain/repositories/auth_re
 import 'package:mocktail/mocktail.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
-void main(){}
+
+void main() {}

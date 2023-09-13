@@ -16,11 +16,13 @@ class UserModel {
   UserModel({this.email, this.username, this.uid});
 
   UserModel copyWith({
+    String? uid,
     String? email,
     String? username,
   }) =>
       UserModel(
         email: email ?? this.email,
+        uid: uid ?? this.uid,
         username: username ?? this.username,
       );
 

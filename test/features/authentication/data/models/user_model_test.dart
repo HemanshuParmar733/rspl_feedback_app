@@ -32,5 +32,18 @@ void main() {
       expect(response['email'], 'abc@gmail.com');
       expect(response['username'], 'abc');
     });
+    test('UserModel_copyWith_isReturningUserModel', () async {
+      //arrange
+      final UserModel userModel =
+          UserModel(uid: '123', email: 'abc@gmail.com', username: 'abc');
+      //act
+      final model = userModel.copyWith(email: 'a1@gmail.com');
+
+      //assert
+      expect(model, isA<UserModel>());
+      expect(model.uid, '123');
+      expect(model.email, 'a1@gmail.com');
+      expect(model.username, 'abc');
+    });
   });
 }

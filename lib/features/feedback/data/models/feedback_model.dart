@@ -40,6 +40,8 @@ class FeedbackModel {
     String? title,
     String? username,
     String? id,
+    List<String>? likes,
+    List<String>? disLikes,
   }) =>
       FeedbackModel(
         category: category ?? this.category,
@@ -48,6 +50,8 @@ class FeedbackModel {
         title: title ?? this.title,
         userName: username ?? userName,
         id: id ?? this.id,
+        likes: likes ?? this.likes,
+        dislikes: dislikes ?? this.dislikes,
       );
 
   factory FeedbackModel.fromJson(dynamic json) => FeedbackModel(
