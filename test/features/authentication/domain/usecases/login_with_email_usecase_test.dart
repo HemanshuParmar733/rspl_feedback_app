@@ -21,7 +21,7 @@ void main() {
     test('LoginWithEmailUseCase_success_isReturningTrue', () async {
       //arrange
       when(() => authRepository.loginWithEmailPassword(email, password))
-          .thenAnswer((realInvocation) => Future.value(Right(true)));
+          .thenAnswer((realInvocation) => Future.value(const Right(true)));
 
       //act
       final response =

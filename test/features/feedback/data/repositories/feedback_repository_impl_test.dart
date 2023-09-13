@@ -16,9 +16,7 @@ void main() {
   late FeedbackDataSource mockFeedbackDataSource;
 
   late FeedbackRepository feedbackRepository;
-  const String email = 'abc@gmail.com';
-  const String password = '123456';
-  final userModel = UserModel(email: email, username: 'abc', uid: 'xyz');
+
   setUp(() {
     mockFeedbackDataSource = MockFeedbackDataSource();
     feedbackRepository = FeedbackRepositoryImpl(mockFeedbackDataSource);
@@ -107,7 +105,7 @@ void main() {
         //arrange
         when(() => mockFeedbackDataSource
                 .createNewFeedback(FeedbackModel(id: "id")))
-            .thenAnswer((realInvocation) => Future.value(Right(true)));
+            .thenAnswer((realInvocation) => Future.value(const Right(true)));
         //act
         final response =
             await feedbackRepository.createNewFeedback(FeedbackModel(id: "id"));

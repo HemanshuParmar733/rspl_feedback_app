@@ -25,7 +25,7 @@ void main() {
       //arrange
       when(() => authRepository.registerNewUser(
               email: email, password: password, userModel: userModel))
-          .thenAnswer((realInvocation) => Future.value(Right(true)));
+          .thenAnswer((realInvocation) => Future.value(const Right(true)));
 
       //act
       final response = await registerNewUserUseCase.call(
