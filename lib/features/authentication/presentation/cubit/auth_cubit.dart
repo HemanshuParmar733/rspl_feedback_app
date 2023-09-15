@@ -1,4 +1,3 @@
-import 'package:bloc/bloc.dart' show Cubit;
 import 'package:feedback_app/core/constants/shared_pref_keys.dart';
 import 'package:feedback_app/features/authentication/auth_dependency_injection.dart';
 import 'package:feedback_app/features/authentication/data/models/user_model.dart';
@@ -7,6 +6,7 @@ import 'package:feedback_app/features/authentication/domain/usecases/register_ne
 import 'package:feedback_app/features/authentication/domain/usecases/signout_usecase.dart';
 import 'package:feedback_app/features/authentication/presentation/cubit/auth_state.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' show Cubit;
 
 import '../../../../core/database/shared_pref_storage.dart';
 
@@ -66,12 +66,6 @@ class AuthCubit extends Cubit<AuthState> {
         changeSuccessState(isLogin: true);
       }
     });
-  }
-
-  bool isUserLoggedIn() {
-    return SharedPrefStorage.instance
-            .getBoolData(key: SharedPrefKeys.userLoginKey) ??
-        false;
   }
 
   Future<void> logOut() async {

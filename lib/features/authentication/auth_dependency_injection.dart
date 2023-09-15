@@ -7,7 +7,7 @@ import 'package:feedback_app/features/authentication/domain/usecases/get_current
 import 'package:feedback_app/features/authentication/domain/usecases/login_with_email_usecase.dart';
 import 'package:feedback_app/features/authentication/domain/usecases/register_new_user_usecase.dart';
 import 'package:feedback_app/features/authentication/domain/usecases/signout_usecase.dart';
-import 'package:feedback_app/features/authentication/presentation/cubit/auth_cubit.dart';
+import 'package:feedback_app/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 
@@ -37,6 +37,11 @@ Future<void> initAuthDependencies() async {
   slAuth.registerLazySingleton<GetCurrentUserUseCase>(
       () => GetCurrentUserUseCase(slAuth.call()));
 
-  // cubit
-  slAuth.registerFactory<AuthCubit>(() => AuthCubit());
+  // Bloc / Cubit
+  slAuth.registerFactory<AuthBloc>(() => AuthBloc(
+      loginWithEmailUseCase: slAuth(),
+      registerNewUserUseCase: slAuth(),
+      signOutUseCase: slAuth()));
+
+  // slAuth.registerFactory<AuthCubit>(()=>AuthCubit());
 }

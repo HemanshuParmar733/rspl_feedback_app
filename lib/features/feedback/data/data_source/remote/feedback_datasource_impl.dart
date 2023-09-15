@@ -8,7 +8,9 @@ import 'package:feedback_app/features/feedback/data/models/feedback_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../../../../core/constants/key_constants.dart';
 import '../../../../../core/failure/failures.dart';
+import '../../../../../core/utils/common_functions.dart';
 
 class FeedbackDataSourceImpl implements FeedbackDataSource {
   final FirebaseFirestore _firestore;
@@ -19,8 +21,8 @@ class FeedbackDataSourceImpl implements FeedbackDataSource {
   Future<Either<Failure, CategoryModel>> getAllFeedbackCategories() async {
     try {
       final snapshot = await _firestore
-          .collection("categories")
-          .doc("feedback_categories")
+          .collection(AppKeyConstants.categoryCollectionKey)
+          .doc(AppKeyConstants.categoryDocKey)
           .get();
       return Right(CategoryModel.fromJson(snapshot.data()!));
     } catch (e) {
@@ -33,7 +35,7 @@ class FeedbackDataSourceImpl implements FeedbackDataSource {
   Future<Either<Failure, bool>> createNewFeedback(FeedbackModel model) async {
     try {
       await _firestore
-          .collection("feedbacks")
+          .collection(AppKeyConstants.feedbackCollectionKey)
           .doc(model.id)
           .set(model.toJson());
       return const Right(true);
@@ -47,7 +49,7 @@ class FeedbackDataSourceImpl implements FeedbackDataSource {
   Future<Either<Failure, UserModel>> getUserData() async {
     try {
       final result = await _firestore
-          .collection("users")
+          .collection(AppKeyConstants.userCollectionKey)
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .get();
       if (result.data() != null) {
@@ -62,37 +64,29 @@ class FeedbackDataSourceImpl implements FeedbackDataSource {
   }
 
   @override
-  Future<Either<Failure, bool>> updateFeedback(FeedbackModel model,
-      UserAction userAction) async {
+  Future<Either<Failure, bool>> updateFeedback(
+      FeedbackModel model, UserAction userAction) async {
     try {
-      final result =
-      await _firestore.collection("feedbacks").doc(model.id).get();
+      final result = await _firestore
+          .collection(AppKeyConstants.feedbackCollectionKey)
+          .doc(model.id)
+          .get();
 
       FeedbackModel currentFeedback = FeedbackModel.fromJson(result.data());
       // get current userId
       String userId = FirebaseAuth.instance.currentUser!.uid;
 
       // user can have only one like/dislike at a time logic
-      if (userAction == UserAction.like) {
-        if (!currentFeedback.likes!.contains(userId) &&
-            !currentFeedback.dislikes!.contains(userId)) {
-          currentFeedback.likes!.add(userId);
-        } else {
-          currentFeedback.likes!.remove(userId);
-        }
-      }
-      if (userAction == UserAction.dislike &&
-          !currentFeedback.likes!.contains(userId)) {
-        if (!currentFeedback.dislikes!.contains(userId)) {
-          currentFeedback.dislikes!.add(userId);
-        } else {
-          currentFeedback.dislikes!.remove(userId);
-        }
-      }
+
+      final updatedFeedback = performLikeDislikeLogic(
+          userAction: userAction,
+          userId: userId,
+          feedbackModel: currentFeedback);
+
       await _firestore
-          .collection("feedbacks")
+          .collection(AppKeyConstants.feedbackCollectionKey)
           .doc(model.id)
-          .update(currentFeedback.toJson());
+          .update(updatedFeedback.toJson());
       return const Right(true);
     } catch (e) {
       return Left(
@@ -103,8 +97,9 @@ class FeedbackDataSourceImpl implements FeedbackDataSource {
   Future<int> getPageSize() async {
     try {
       final paginationDoc = await _firestore
-          .collection("pagination")
-          .doc("page").get();
+          .collection(AppKeyConstants.paginationCollectionKey)
+          .doc(AppKeyConstants.paginationDocKey)
+          .get();
       if (paginationDoc.exists) {
         return int.parse(paginationDoc.get('page_size'));
       }
@@ -113,6 +108,7 @@ class FeedbackDataSourceImpl implements FeedbackDataSource {
     }
     return 0;
   }
+
   @override
   Future<List<FeedbackModel>> getPaginatedFeedbacks(
       FeedbackModel? feedbackModel) async {
@@ -121,13 +117,13 @@ class FeedbackDataSourceImpl implements FeedbackDataSource {
       if (feedbackModel != null) {
         // get document from firestore
         final lastDoc = await _firestore
-            .collection("feedbacks")
+            .collection(AppKeyConstants.feedbackCollectionKey)
             .doc(feedbackModel.id)
             .get();
         if (lastDoc.exists) {
           // going forward in pagination
           final query = _firestore
-              .collection("feedbacks")
+              .collection(AppKeyConstants.feedbackCollectionKey)
               .orderBy("time", descending: true)
               .startAfterDocument(lastDoc)
               .limit(pageSize);
@@ -137,7 +133,7 @@ class FeedbackDataSourceImpl implements FeedbackDataSource {
       } else {
         // initial 5 items sorted list at time of page load
         final query = _firestore
-            .collection("feedbacks")
+            .collection(AppKeyConstants.feedbackCollectionKey)
             .orderBy("time", descending: true)
             .limit(pageSize);
         final snapshots = await query.get();
@@ -149,5 +145,3 @@ class FeedbackDataSourceImpl implements FeedbackDataSource {
     return [];
   }
 }
-
-

@@ -12,7 +12,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   User? getCurrentUser() {
-   return _authDataSource.getCurrentUser();
+    return _authDataSource.getCurrentUser();
   }
 
   @override

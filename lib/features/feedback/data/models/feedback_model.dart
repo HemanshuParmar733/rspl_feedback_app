@@ -1,4 +1,6 @@
-class FeedbackModel {
+import 'package:equatable/equatable.dart';
+
+class FeedbackModel extends Equatable {
   String? category;
   String id;
   String? description;
@@ -9,16 +11,17 @@ class FeedbackModel {
   List<String>? likes;
   List<String>? dislikes;
 
-  FeedbackModel(
-      {this.category,
-      required this.id,
-      this.description,
-      this.reporterName,
-      this.title,
-      this.time,
-      this.userName,
-      this.likes,
-      this.dislikes});
+  FeedbackModel({
+    this.category,
+    required this.id,
+    this.description,
+    this.reporterName,
+    this.title,
+    this.time,
+    this.userName,
+    this.likes,
+    this.dislikes,
+  });
 
   FeedbackModel copyWith({
     String? category,
@@ -40,7 +43,7 @@ class FeedbackModel {
         userName: username ?? userName,
         id: id ?? this.id,
         likes: likes ?? this.likes,
-        dislikes: dislikes ?? this.dislikes,
+        dislikes: disLikes ?? dislikes,
       );
 
   factory FeedbackModel.fromJson(dynamic json) => FeedbackModel(
@@ -71,4 +74,11 @@ class FeedbackModel {
         "dislikes":
             dislikes == null ? [] : List<String>.from(dislikes!.map((x) => x)),
       };
+
+  @override
+  List<Object?> get props => [
+        id,
+        likes?.length,
+        dislikes?.length,
+      ];
 }

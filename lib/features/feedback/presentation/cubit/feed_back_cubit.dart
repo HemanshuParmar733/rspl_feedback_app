@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart' show Cubit;
+import 'package:flutter_bloc/flutter_bloc.dart' show Cubit;
 import 'package:feedback_app/core/enums/user_action_enum.dart';
 import 'package:feedback_app/features/feedback/data/models/feedback_model.dart';
 import 'package:feedback_app/features/feedback/domain/usecases/create_new_feedback_usecase.dart';
@@ -78,7 +78,7 @@ class FeedBackCubit extends Cubit<FeedbackState> {
     return await _getAllFeedbacksUseCase.call(feedbackModel);
   }
 
-  Future<void> getInitialFeedbacks({FeedbackModel? feedbackModel}) async {
+  Future<void> getLatestFeedbacks({FeedbackModel? feedbackModel}) async {
     final List<FeedbackModel> feedbacks =
         await _getAllFeedbacksUseCase.call(feedbackModel);
     changeSuccessState(feedbacks: feedbacks);
@@ -100,7 +100,7 @@ class FeedBackCubit extends Cubit<FeedbackState> {
       emit(const FeedbackFailure(errorMsg: 'Failed to update feedback.'));
     }, (bool isUpdated) {
       if (isUpdated) {
-        changeSuccessState(isFeedbackCreate: true);
+        changeSuccessState(isUpdatingFeedback: true);
       }
     });
   }
@@ -112,8 +112,8 @@ class FeedBackCubit extends Cubit<FeedbackState> {
     }, (userModel) {
       if (userModel.username != null) {
         String name = userModel.username!;
-        if (name.length > 10) {
-          name = userModel.username!.substring(0, 11);
+        if (name.length > 20) {
+          name = "${userModel.username!.substring(0, 21)}...";
         }
         changeSuccessState(username: name);
       }

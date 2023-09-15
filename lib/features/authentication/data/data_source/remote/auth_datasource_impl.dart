@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
+import 'package:feedback_app/core/constants/key_constants.dart';
 import 'package:feedback_app/features/authentication/data/data_source/remote/auth_datasource.dart';
 import 'package:feedback_app/features/authentication/data/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,7 +30,7 @@ class AuthDataSourceImpl implements AuthDataSource {
       if (loginCredentials.user != null) {
         userModel.uid = loginCredentials.user!.uid;
         await _fireStore
-            .collection("users")
+            .collection(AppKeyConstants.userCollectionKey)
             .doc(userModel.uid)
             .set(userModel.toJson());
 

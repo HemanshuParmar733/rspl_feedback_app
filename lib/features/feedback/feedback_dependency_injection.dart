@@ -6,7 +6,7 @@ import 'package:feedback_app/features/feedback/domain/usecases/create_new_feedba
 import 'package:feedback_app/features/feedback/domain/usecases/get_paginated_feedbacks_usecase.dart';
 import 'package:feedback_app/features/feedback/domain/usecases/get_userdata_usecase.dart';
 import 'package:feedback_app/features/feedback/domain/usecases/update_feedback_usecase.dart';
-import 'package:feedback_app/features/feedback/presentation/cubit/feed_back_cubit.dart';
+import 'package:feedback_app/features/feedback/presentation/bloc/feedback_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import 'domain/usecases/get_all_feedback_categories.dart';
@@ -34,6 +34,12 @@ Future<void> initFeedbackDependencies() async {
   slFeedback.registerLazySingleton<GetUserDataUseCase>(
       () => GetUserDataUseCase(slFeedback.call()));
 
-  // cubit
-  slFeedback.registerFactory<FeedBackCubit>(() => FeedBackCubit());
+  // Bloc / Cubit
+  slFeedback.registerFactory<FeedbackBloc>(() => FeedbackBloc(
+      createNewFeedbackUseCase: slFeedback(),
+      getAllFeedbacksUseCase: slFeedback(),
+      getAllFeedbackCategoriesUseCase: slFeedback(),
+      updateFeedbackUseCase: slFeedback(),
+      getUserDataUseCase: slFeedback()));
+  // slFeedback.registerFactory<FeedBackCubit>(()=>FeedBackCubit());
 }

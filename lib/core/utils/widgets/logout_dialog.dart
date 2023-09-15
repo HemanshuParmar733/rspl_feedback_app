@@ -1,8 +1,7 @@
 import 'package:feedback_app/core/constants/string_constants.dart';
-import 'package:feedback_app/core/navigation/route_names.dart';
-import 'package:feedback_app/core/utils/helper/helper_functions.dart';
 import 'package:feedback_app/features/authentication/auth_dependency_injection.dart';
-import 'package:feedback_app/features/authentication/presentation/cubit/auth_cubit.dart';
+import 'package:feedback_app/features/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:feedback_app/features/authentication/presentation/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,11 +10,8 @@ import '../../theme/app_colors.dart';
 Future<void> showLogoutDialog(BuildContext context) async {
   Widget logOutButton = TextButton(
       onPressed: () {
-        slAuth<AuthCubit>().logOut().then((value) {
-          context.pushReplacement(getRoutePath(RouteNames.login));
-        }).catchError((error) {
-          debugPrint("Error while logging out => $error");
-        });
+        slAuth<AuthBloc>().add(const OnLogOutEvent());
+        context.pushReplacement(LoginPage.loginRoute);
       },
       child: const Text(AppConstants.logoutTitle,
           style: TextStyle(color: AppColors.redColor)));

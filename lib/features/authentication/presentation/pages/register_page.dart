@@ -1,24 +1,24 @@
 import 'package:feedback_app/core/extensions/sizedbox_extensions.dart';
-import 'package:feedback_app/core/utils/helper/helper_functions.dart';
 import 'package:feedback_app/core/utils/validators/app_validators.dart';
 import 'package:feedback_app/core/utils/widgets/custom_elevated_button.dart';
 import 'package:feedback_app/core/utils/widgets/custom_textfield.dart';
-import 'package:feedback_app/core/utils/widgets/error_widget.dart';
 import 'package:feedback_app/core/utils/widgets/loding_dialog.dart';
 import 'package:feedback_app/features/authentication/auth_dependency_injection.dart';
 import 'package:feedback_app/features/authentication/data/models/user_model.dart';
-import 'package:feedback_app/features/authentication/presentation/cubit/auth_cubit.dart';
-import 'package:feedback_app/features/authentication/presentation/cubit/auth_state.dart';
+import 'package:feedback_app/features/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:feedback_app/features/authentication/presentation/pages/login_page.dart';
 import 'package:feedback_app/features/authentication/presentation/widgets/app_logo_widget.dart';
+import 'package:feedback_app/features/feedback/presentation/pages/feedback_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/navigation/route_names.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
+
+  static const String registerRoute = '/register';
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -33,13 +33,13 @@ class _RegisterPageState extends State<RegisterPage> {
       TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final AuthCubit authCubit = slAuth<AuthCubit>();
+  final AuthBloc authBloc = slAuth<AuthBloc>();
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        context.pushReplacement(getRoutePath(RouteNames.login));
+        context.pushReplacement(LoginPage.loginRoute);
         return false;
       },
       child: SafeArea(
@@ -48,7 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
           centerTitle: false,
           leading: GestureDetector(
               onTap: () {
-                context.pushReplacement(getRoutePath(RouteNames.login));
+                context.pushReplacement(LoginPage.loginRoute);
               },
               child: const Icon(
                 Icons.arrow_back,
@@ -59,27 +59,25 @@ class _RegisterPageState extends State<RegisterPage> {
             style: TextStyle(color: AppColors.whiteColor),
           ),
         ),
-        body: BlocListener<AuthCubit, AuthState>(
-          bloc: authCubit,
+        body: BlocListener<AuthBloc, AuthState>(
+          bloc: authBloc,
           listener: (context, state) {
-            if (state is AuthSuccess) {
-              if (state.isLoading != null && state.isLoading!) {
-                showLoadingDialog(
-                    context: context,
-                    title: "Please wait",
-                    message: "Loading...");
-              }
-              if (state.isLoading != null &&
-                  !state.isLoading! &&
-                  !state.isRegister!) {
-                hideLoadingDialog(context: context);
-              }
-              if (state.isRegister != null && state.isRegister!) {
-                // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>), (route) => false)
-                context.pushReplacement(getRoutePath(RouteNames.feedbackList));
-              }
+            if (state.authStatus == AuthStatus.authLoading) {
+              showLoadingDialog(
+                  context: context,
+                  title: "Please wait",
+                  message: "Loading...");
             }
-            if (state is AuthFailure) {
+            if (state.authStatus == AuthStatus.authSuccess &&
+                state.isRegister != null &&
+                state.isRegister!) {
+              hideLoadingDialog(context: context);
+              context.pushReplacement(FeedbackListPage.feedbackListRoute);
+            }
+
+            if (state.authStatus == AuthStatus.authFailure) {
+              hideLoadingDialog(context: context);
+
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text(state.errorMsg ?? "Something went wrong.")));
             }
@@ -112,48 +110,22 @@ class _RegisterPageState extends State<RegisterPage> {
                               AppValidators.emailValidator(value),
                           controller: _emailController),
                       20.Vspace,
-                      BlocBuilder<AuthCubit, AuthState>(
-                          bloc: authCubit,
+                      BlocBuilder<AuthBloc, AuthState>(
+                          bloc: authBloc,
                           builder: (context, state) {
-                            return state.when(initial: () {
-                              return _buildPassWordTextField(
-                                  isConfirmPassField: false,
-                                  isObscure: true,
-                                  controller: _passwordController);
-                            }, failure: (failureMsg) {
-                              return _buildPassWordTextField(
-                                  isConfirmPassField: false,
-                                  isObscure: true,
-                                  controller: _passwordController);
-                            }, success:
-                                (passObscure, confirmPassObscure, _, __, ___) {
-                              return _buildPassWordTextField(
-                                  controller: _passwordController,
-                                  isConfirmPassField: false,
-                                  isObscure: passObscure!);
-                            });
+                            return _buildPassWordTextField(
+                                isConfirmPassField: false,
+                                isObscure: state.obscurePassword ?? true,
+                                controller: _passwordController);
                           }),
                       20.Vspace,
-                      BlocBuilder<AuthCubit, AuthState>(
-                          bloc: authCubit,
+                      BlocBuilder<AuthBloc, AuthState>(
+                          bloc: authBloc,
                           builder: (context, state) {
-                            return state.when(initial: () {
-                              return _buildPassWordTextField(
-                                  isObscure: true,
-                                  controller: _confirmPasswordController,
-                                  isConfirmPassField: true);
-                            }, failure: (failureMsg) {
-                              return _buildPassWordTextField(
-                                  isObscure: true,
-                                  controller: _confirmPasswordController,
-                                  isConfirmPassField: true);
-                            }, success:
-                                (passObscure, confirmPassObscure, _, __, ___) {
-                              return _buildPassWordTextField(
-                                  isObscure: confirmPassObscure!,
-                                  controller: _confirmPasswordController,
-                                  isConfirmPassField: true);
-                            });
+                            return _buildPassWordTextField(
+                                isObscure: state.obscureConfirmPassword ?? true,
+                                controller: _confirmPasswordController,
+                                isConfirmPassField: true);
                           }),
                       20.Vspace,
                       SizedBox(
@@ -162,13 +134,13 @@ class _RegisterPageState extends State<RegisterPage> {
                           child: CustomElevatedButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  authCubit.registerNewUser(
+                                  authBloc.add(OnRegisterEvent(
                                       email: _emailController.text.trim(),
                                       password: _passwordController.text.trim(),
-                                      model: UserModel(
+                                      userModel: UserModel(
                                           email: _emailController.text.trim(),
                                           username:
-                                              _nameController.text.trim()));
+                                              _nameController.text.trim())));
                                 }
                               },
                               btnText: "Register"))
@@ -198,9 +170,10 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           onPressed: () {
             if (isConfirmPassField) {
-              authCubit.toggleConfirmPasswordVisibility(isObscure);
+              authBloc.add(
+                  OnToggleConfirmPasswordVisibilityEvent(value: isObscure));
             } else {
-              authCubit.togglePasswordVisibility(isObscure);
+              authBloc.add(OnTogglePasswordVisibilityEvent(value: isObscure));
             }
           },
         ),
@@ -213,10 +186,5 @@ class _RegisterPageState extends State<RegisterPage> {
                 actualPass: _passwordController.text,
                 anotherPass: _confirmPasswordController.text.trim()),
         controller: controller);
-  }
-
-  Widget _buildErrorWidget(String? failureMsg) {
-    return CustomErrorWidget(
-        errorMsg: failureMsg ?? "Unable to load password field");
   }
 }

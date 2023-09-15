@@ -1,3 +1,4 @@
+import 'package:feedback_app/core/extensions/context_extensions.dart';
 import 'package:feedback_app/core/extensions/sizedbox_extensions.dart';
 import 'package:feedback_app/features/feedback/data/models/feedback_model.dart';
 import 'package:flutter/material.dart';
@@ -36,14 +37,14 @@ class FeedbackCardWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  feedbackModel.userName ?? "Username",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
-                      color: AppColors.navyBlueColor),
+                Expanded(
+                  child: Text(
+                    feedbackModel.userName ?? "Username",
+                    maxLines: 1,
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
                 ),
                 Text(DateFormat.yMMMEd()
                     .format(DateTime.parse(feedbackModel.time!)))
@@ -69,9 +70,11 @@ class FeedbackCardWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const Icon(
+                Icon(
                   Icons.category,
-                  color: AppColors.navyBlueColor,
+                  color: context.isDarkMode
+                      ? AppColors.whiteColor
+                      : AppColors.navyBlueColor,
                   size: 20,
                 ),
                 8.Hspace,
@@ -86,9 +89,11 @@ class FeedbackCardWidget extends StatelessWidget {
             ),
             Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.person,
-                  color: AppColors.navyBlueColor,
+                  color: context.isDarkMode
+                      ? AppColors.whiteColor
+                      : AppColors.navyBlueColor,
                   size: 20,
                 ),
                 8.Hspace,

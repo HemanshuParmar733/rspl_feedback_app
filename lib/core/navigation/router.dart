@@ -10,42 +10,37 @@ import 'package:go_router/go_router.dart';
 /// The route configuration.
 class AppRouter {
   static final goRouter = GoRouter(
+    initialLocation: RouteNames.splash,
     routes: <RouteBase>[
       GoRoute(
         path: RouteNames.splash,
         builder: (BuildContext context, GoRouterState state) {
           return const SplashPage();
         },
-        routes: <RouteBase>[
-          GoRoute(
-            path: RouteNames.createFeedback,
-            name: RouteNames.createFeedback,
-            builder: (BuildContext context, GoRouterState state) {
-              return CreateFeedBackPage();
-            },
-          ),
-          GoRoute(
-            path: RouteNames.feedbackList,
-            name: RouteNames.feedbackList,
-            builder: (BuildContext context, GoRouterState state) {
-              return FeedbackListPage();
-            },
-          ),
-          GoRoute(
-            path: RouteNames.register,
-            name: RouteNames.register,
-            builder: (BuildContext context, GoRouterState state) {
-              return const RegisterPage();
-            },
-          ),
-          GoRoute(
-            path: RouteNames.login,
-            name: RouteNames.login,
-            builder: (BuildContext context, GoRouterState state) {
-              return const LoginPage();
-            },
-          ),
-        ],
+      ),
+      GoRoute(
+        path: CreateFeedBackPage.createFeedbackRoute,
+        builder: (BuildContext context, GoRouterState state) {
+          return CreateFeedBackPage();
+        },
+      ),
+      GoRoute(
+        path: FeedbackListPage.feedbackListRoute,
+        builder: (BuildContext context, GoRouterState state) {
+          return const FeedbackListPage();
+        },
+      ),
+      GoRoute(
+        path: RegisterPage.registerRoute,
+        builder: (BuildContext context, GoRouterState state) {
+          return const RegisterPage();
+        },
+      ),
+      GoRoute(
+        path: LoginPage.loginRoute,
+        builder: (BuildContext context, GoRouterState state) {
+          return const LoginPage();
+        },
       ),
     ],
   );

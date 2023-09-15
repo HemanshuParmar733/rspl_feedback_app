@@ -71,14 +71,31 @@ ThemeData customLightTheme() {
 ThemeData customDarkTheme() {
   final ThemeData darkTheme = ThemeData.dark();
   return darkTheme.copyWith(
-    useMaterial3: true,
-    primaryColor: Colors.black38,
-    indicatorColor: const Color(0xFF807A6B),
-    hintColor: const Color(0xFFFFF8E1),
-    primaryIconTheme: darkTheme.primaryIconTheme.copyWith(
-      color: AppColors.lightBlueColor,
-      size: 20,
-    ),
-    cardColor: AppColors.lightBlueColor,
-  );
+      useMaterial3: true,
+      indicatorColor: const Color(0xFF807A6B),
+      hintColor: const Color(0xFFFFF8E1),
+      primaryIconTheme: darkTheme.primaryIconTheme.copyWith(
+        color: AppColors.lightBlueColor,
+        size: 20,
+      ),
+      primaryColor: Colors.blue,
+      primaryColorDark: Colors.blue.shade900,
+      primaryColorLight: Colors.blue.shade50,
+      colorScheme: ColorScheme.fromSwatch(
+        primarySwatch: Colors.blue,
+        accentColor: Colors.blue.shade900,
+        brightness: Brightness.dark,
+      ),
+      cardColor: AppColors.lightBlueColor,
+      textTheme: TextTheme(
+        displayLarge: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 24,
+        ),
+        bodyLarge: TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+        ),
+      ));
 }

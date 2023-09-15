@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class FeedbackCardText extends StatelessWidget {
   const FeedbackCardText(
@@ -21,11 +21,8 @@ class FeedbackCardText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: TextStyle(
-          overflow: overflow,
-          color: textColor,
-          fontSize: fontSize,
-          fontWeight: fontWeight),
+      style: Theme.of(context).textTheme.displayLarge?.copyWith(
+          overflow: overflow, fontSize: fontSize, fontWeight: fontWeight),
     );
   }
 }

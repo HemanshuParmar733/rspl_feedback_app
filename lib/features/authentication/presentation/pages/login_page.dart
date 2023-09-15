@@ -1,13 +1,12 @@
 import 'package:feedback_app/core/extensions/sizedbox_extensions.dart';
-import 'package:feedback_app/core/navigation/route_names.dart';
-import 'package:feedback_app/core/utils/helper/helper_functions.dart';
 import 'package:feedback_app/core/utils/validators/app_validators.dart';
 import 'package:feedback_app/core/utils/widgets/custom_elevated_button.dart';
 import 'package:feedback_app/core/utils/widgets/custom_textfield.dart';
 import 'package:feedback_app/features/authentication/auth_dependency_injection.dart';
-import 'package:feedback_app/features/authentication/presentation/cubit/auth_cubit.dart';
-import 'package:feedback_app/features/authentication/presentation/cubit/auth_state.dart';
+import 'package:feedback_app/features/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:feedback_app/features/authentication/presentation/pages/register_page.dart';
 import 'package:feedback_app/features/authentication/presentation/widgets/app_logo_widget.dart';
+import 'package:feedback_app/features/feedback/presentation/pages/feedback_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +16,8 @@ import '../../../../core/utils/widgets/loding_dialog.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  static const String loginRoute = '/login';
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -28,33 +29,29 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final AuthCubit authCubit = slAuth<AuthCubit>();
+  final AuthBloc authBloc = slAuth<AuthBloc>();
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      body: BlocListener(
-        bloc: authCubit,
+      body: BlocListener<AuthBloc, AuthState>(
+        bloc: authBloc,
         listener: (context, state) {
-          if (state is AuthSuccess) {
-            if (state.isLoading != null && state.isLoading!) {
-              showLoadingDialog(
-                  context: context,
-                  title: "Please wait",
-                  message: "Loading...");
-            }
-            if (state.isLoading != null &&
-                !state.isLoading! &&
-                !state.isLogin!) {
-              hideLoadingDialog(context: context);
-            }
-
-            if (state.isLogin!) {
-              context.pushReplacement(getRoutePath(RouteNames.feedbackList));
-            }
+          if (state.authStatus == AuthStatus.authLoading) {
+            showLoadingDialog(
+                context: context, title: "Please wait", message: "Loading...");
           }
-          if (state is AuthFailure) {
+          if (state.authStatus == AuthStatus.authSuccess &&
+              state.isLogin != null &&
+              state.isLogin!) {
+            hideLoadingDialog(context: context);
+            context.pushReplacement(FeedbackListPage.feedbackListRoute);
+          }
+
+          if (state.authStatus == AuthStatus.authFailure) {
+            hideLoadingDialog(context: context);
+
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text(state.errorMsg ?? "Something went wrong.")));
           }
@@ -80,17 +77,11 @@ class _LoginPageState extends State<LoginPage> {
                             AppValidators.emailValidator(value),
                         controller: _emailController),
                     20.Vspace,
-                    BlocBuilder<AuthCubit, AuthState>(
-                        bloc: authCubit,
+                    BlocBuilder<AuthBloc, AuthState>(
+                        bloc: authBloc,
                         builder: (context, state) {
-                          return state.when(initial: () {
-                            return _buildPassWordTextField(true);
-                          }, failure: (failureMsg) {
-                            return _buildPassWordTextField(false);
-                          }, success: (passWordObscure, confirmPassObscure, _,
-                              __, ___) {
-                            return _buildPassWordTextField(passWordObscure!);
-                          });
+                          return _buildPassWordTextField(
+                              state.obscurePassword ?? true);
                         }),
                     10.Vspace,
                     Align(
@@ -106,9 +97,9 @@ class _LoginPageState extends State<LoginPage> {
                         child: CustomElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                authCubit.loginWithEmailPassword(
+                                authBloc.add(OnLoginEvent(
                                     email: _emailController.text.trim(),
-                                    password: _passwordController.text.trim());
+                                    password: _passwordController.text.trim()));
                               }
                             },
                             btnText: "Login")),
@@ -125,8 +116,7 @@ class _LoginPageState extends State<LoginPage> {
                                 width: 1.0,
                                 style: BorderStyle.solid))),
                         onPressed: () {
-                          context.pushReplacement(
-                              getRoutePath(RouteNames.register));
+                          context.pushReplacement(RegisterPage.registerRoute);
                         },
                         child: const Text(
                           "Register",
@@ -153,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
             color: Theme.of(context).primaryColorDark,
           ),
           onPressed: () {
-            authCubit.togglePasswordVisibility(isObscure);
+            authBloc.add(OnTogglePasswordVisibilityEvent(value: isObscure));
           },
         ),
         autoValidateMode: AutovalidateMode.onUserInteraction,
