@@ -3,9 +3,6 @@
 # Description :
 Flutter firebase application for both Android and iOS platform.
 
-# APK Link (Android):
-https://i.diawi.com/AhzXUu
-
 # TechStack Used:
 
 - architecture: TDD style clean architecture
@@ -25,13 +22,13 @@ https://i.diawi.com/AhzXUu
 - User can post feedback with category, user can also post anonymous feedback without mentioning
   reporter name.
 - User can view others feedbacks with all the details and like/dislike the feedbacks.
+- Pagination of feedbacks
 - User can logout from system.
 
 
 
 # Extra features that can be added later on:
 
-- Pagination of feedbacks
 - Local search of feedback by feedback title
 - Display image of the feedback sender in feedback
 - If user is owner of selected feedback he can edit/delete feedback
@@ -49,7 +46,6 @@ Tools • Dart 3.1.0 • DevTools 2.25.0
 
 - flutter pub get
 - dart run build_runner build --delete-conflicting-outputs
-- dart run flutter_launcher_icons
 - flutter run
 
 # How to build release apk for internal release?
