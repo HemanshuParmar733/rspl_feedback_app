@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:feedback_app/core/database/shared_pref_storage.dart';
 import 'package:feedback_app/features/authentication/data/data_source/remote/auth_datasource.dart';
 import 'package:feedback_app/features/authentication/data/data_source/remote/auth_datasource_impl.dart';
 import 'package:feedback_app/features/authentication/data/repositories/auth_repository_impl.dart';
@@ -16,6 +17,8 @@ final slAuth = GetIt.instance;
 Future<void> initAuthDependencies() async {
   // database
   slAuth.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
+  slAuth.registerLazySingleton<SharedPrefStorage>(
+      () => SharedPrefStorage.instance);
   slAuth.registerLazySingleton<FirebaseFirestore>(
       () => FirebaseFirestore.instance);
 
@@ -39,6 +42,7 @@ Future<void> initAuthDependencies() async {
 
   // Bloc / Cubit
   slAuth.registerFactory<AuthBloc>(() => AuthBloc(
+      sharedPrefStorage: slAuth(),
       loginWithEmailUseCase: slAuth(),
       registerNewUserUseCase: slAuth(),
       signOutUseCase: slAuth()));

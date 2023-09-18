@@ -12,16 +12,18 @@ import '../../domain/usecases/register_new_user_usecase.dart';
 import '../../domain/usecases/signout_usecase.dart';
 
 part 'auth_event.dart';
+
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginWithEmailUseCase loginWithEmailUseCase;
   final RegisterNewUserUseCase registerNewUserUseCase;
-
+  final SharedPrefStorage sharedPrefStorage;
   final SignOutUseCase signOutUseCase;
 
   AuthBloc(
       {required this.loginWithEmailUseCase,
+      required this.sharedPrefStorage,
       required this.registerNewUserUseCase,
       required this.signOutUseCase})
       : super(const AuthState()) {
@@ -44,8 +46,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           errorMsg: 'Invalid credentials, Please try again.'));
     }, (bool isSuccess) {
       if (isSuccess) {
-        SharedPrefStorage.instance
-            .setBoolData(key: SharedPrefKeys.userLoginKey, data: isSuccess);
+        sharedPrefStorage.setBoolData(
+            key: SharedPrefKeys.userLoginKey, data: isSuccess);
         emit(state.copyWith(isLogin: true, authStatus: AuthStatus.authSuccess));
       }
     });
@@ -64,8 +66,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           errorMsg: 'Unable to create user, try with different email.'));
     }, (bool isCreated) {
       if (isCreated) {
-        SharedPrefStorage.instance
-            .setBoolData(key: SharedPrefKeys.userLoginKey, data: isCreated);
+        sharedPrefStorage.setBoolData(
+            key: SharedPrefKeys.userLoginKey, data: isCreated);
         emit(state.copyWith(
             isRegister: true, authStatus: AuthStatus.authSuccess));
       }
@@ -87,8 +89,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> _onLogOut(OnLogOutEvent event, Emitter<AuthState> emit) async {
     try {
-      await SharedPrefStorage.instance
-          .deleteData(key: SharedPrefKeys.userLoginKey);
+      await sharedPrefStorage.deleteData(key: SharedPrefKeys.userLoginKey);
       await signOutUseCase.call();
       emit(state.copyWith(authStatus: AuthStatus.authSuccess));
     } catch (e) {

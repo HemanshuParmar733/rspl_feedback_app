@@ -59,7 +59,7 @@ class FeedbackDataSourceImpl implements FeedbackDataSource {
       }
     } catch (e) {
       return Left(
-          ServerFailure(error: "Failure : failed to create new feedback."));
+          ServerFailure(error: "Failure : failed to get userdata."));
     }
   }
 
@@ -90,7 +90,7 @@ class FeedbackDataSourceImpl implements FeedbackDataSource {
       return const Right(true);
     } catch (e) {
       return Left(
-          ServerFailure(error: "Failure : failed to create new feedback."));
+          ServerFailure(error: "Failure : failed to update feedback."));
     }
   }
 
